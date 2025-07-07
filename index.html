@@ -1,5 +1,141 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<!-- (الكود كامل موجود مسبقاً في canvas وتم حفظه في هذا المتغير) -->
-<!-- سيتم حفظه كملف HTML داخل ملف مضغوط ZIP -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كشف استعارة أدوات وأجهزة</title>
+    <style>
+        body {
+            background-color: #e6ccff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: black;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn-orange { background-color: #ffa64d; }
+        .btn-blue { background-color: #4da6ff; }
+        .form-section { display: none; margin-top: 20px; }
+        input, textarea, select {
+            margin: 8px 0;
+            padding: 8px;
+            width: 80%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .back-arrow {
+            display: block;
+            margin: 20px auto;
+            font-size: 24px;
+            color: #000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>كشف استعارة أدوات وأجهزة مركز الابتكار العلمي والروبوت - محافظة ظفار -</h1>
+
+    <button class="btn-orange" onclick="showSection('borrow')">بيانات الاستعارة</button>
+    <button class="btn-blue" onclick="showSection('return')">بيانات الإرجاع</button>
+
+    <!-- Form: Borrow -->
+    <div id="borrow" class="form-section">
+        <input type="text" id="schoolBorrow" placeholder="اسم المدرسة / الجهة">
+        <input type="text" id="borrower" placeholder="اسم المستعير">
+        <input type="tel" id="phoneBorrow" placeholder="رقم الهاتف">
+        <textarea id="devicesBorrow" placeholder="بيانات الأدوات والأجهزة"></textarea>
+        <input type="date" id="dateBorrow">
+        <br>
+        <button onclick="submitForm('borrow')">إرسال</button>
+        <a class="back-arrow" href="#" onclick="goHome()">⬅ الرجوع</a>
+    </div>
+
+    <!-- Form: Return -->
+    <div id="return" class="form-section">
+        <input type="text" id="schoolReturn" placeholder="اسم المدرسة / الجهة">
+        <input type="text" id="borrowerReturn" placeholder="اسم المستعير">
+        <input type="text" id="receiverReturn" placeholder="اسم المستلم">
+        <select id="statusReturn">
+            <option value="تم الإرجاع">تم الإرجاع</option>
+            <option value="لم يتم الإرجاع">لم يتم الإرجاع</option>
+        </select>
+        <input type="date" id="dateReturn">
+        <br>
+        <button onclick="submitForm('return')">إرسال</button>
+        <a class="back-arrow" href="#" onclick="goHome()">⬅ الرجوع</a>
+    </div>
+
+    <script>
+        function showSection(type) {
+            document.getElementById('borrow').style.display = (type === 'borrow') ? 'block' : 'none';
+            document.getElementById('return').style.display = (type === 'return') ? 'block' : 'none';
+        }
+
+        function goHome() {
+            document.getElementById('borrow').style.display = 'none';
+            document.getElementById('return').style.display = 'none';
+        }
+
+        function submitForm(type) {
+            let message = "";
+            let phone = "";
+            let payload = {};
+
+            if (type === 'borrow') {
+                const school = document.getElementById('schoolBorrow').value.trim();
+                const name = document.getElementById('borrower').value.trim();
+                const phoneNumber = document.getElementById('phoneBorrow').value.trim();
+                const devices = document.getElementById('devicesBorrow').value.trim();
+                const date = document.getElementById('dateBorrow').value;
+                if (!school || !name || !phoneNumber || !devices || !date) return alert("يرجى تعبئة جميع البيانات.");
+                message = `استعارة:\nالمدرسة / الجهة: ${school}\nالمستعير: ${name}\nرقم الهاتف: ${phoneNumber}\nالأجهزة: ${devices}\nالتاريخ: ${date}\n\nشكراً لك - مركز الابتكار العلمي والروبوت`;
+                phone = phoneNumber;
+                payload = { type, school, name, phone, devices, receiver: "", status: "", date };
+            } else {
+                const school = document.getElementById('schoolReturn').value.trim();
+                const borrower = document.getElementById('borrowerReturn').value.trim();
+                const receiver = document.getElementById('receiverReturn').value.trim();
+                const status = document.getElementById('statusReturn').value;
+                const date = document.getElementById('dateReturn').value;
+                if (!school || !borrower || !receiver || !status || !date) return alert("يرجى تعبئة جميع البيانات.");
+                phone = prompt("ادخل رقم الهاتف لإرسال رسالة واتساب (مثال: 9689xxxxxxx):");
+                if (!phone) return;
+                message = `إرجاع:\nالمدرسة / الجهة: ${school}\nالمستعير: ${borrower}\nالمستلم: ${receiver}\nالحالة: ${status}\nالتاريخ: ${date}\n\nشكراً لك - مركز الابتكار العلمي والروبوت`;
+                payload = { type, school, name: borrower, phone, devices: "", receiver, status, date };
+            }
+
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://wa.me/${phone}?text=${encodedMessage}`;
+            window.open(url, '_blank');
+
+            // إرسال البيانات إلى Google Sheets
+            fetch("https://script.google.com/macros/s/AKfycbz0r905kQm1FmalYyjmgAr6d7Dr6s7zvIZxSZB-HQpi25Gq9vhr0ojy7EixipMDotK7/exec", {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(response => {
+                if (response.ok) {
+                    alert("✅ تم إرسال البيانات وتخزينها بنجاح!");
+                } else {
+                    alert("⚠️ حدث خطأ أثناء حفظ البيانات في Google Sheets.");
+                }
+            }).catch(() => {
+                alert("❌ تعذر الاتصال بـ Google Sheets.");
+            });
+        }
+    </script>
+</body>
 </html>
