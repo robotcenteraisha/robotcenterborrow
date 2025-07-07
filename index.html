@@ -1,141 +1,119 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كشف استعارة أدوات وأجهزة</title>
-    <style>
-        body {
-            background-color: #e6ccff;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        h1 {
-            color: black;
-            font-size: 24px;
-            margin-bottom: 30px;
-        }
-        button {
-            padding: 12px 24px;
-            margin: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        .btn-orange { background-color: #ffa64d; }
-        .btn-blue { background-color: #4da6ff; }
-        .form-section { display: none; margin-top: 20px; }
-        input, textarea, select {
-            margin: 8px 0;
-            padding: 8px;
-            width: 80%;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        .back-arrow {
-            display: block;
-            margin: 20px auto;
-            font-size: 24px;
-            color: #000;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>كشف الاستعارة والإرجاع</title>
+  <style>
+    body {
+      background-color: #ffe0b2;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: black;
+    }
+    button {
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    form {
+      margin-top: 20px;
+    }
+    input, textarea {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .back-button {
+      font-size: 30px;
+      margin-top: 20px;
+      cursor: pointer;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <h1>كشف استعارة أدوات وأجهزة مركز الابتكار العلمي والروبوت - محافظة ظفار -</h1>
 
-    <button class="btn-orange" onclick="showSection('borrow')">بيانات الاستعارة</button>
-    <button class="btn-blue" onclick="showSection('return')">بيانات الإرجاع</button>
+  <h1>كشف استعارة أدوات وأجهزة مركز الابتكار العلمي والروبوت - محافظة ظفار -</h1>
 
-    <!-- Form: Borrow -->
-    <div id="borrow" class="form-section">
-        <input type="text" id="schoolBorrow" placeholder="اسم المدرسة / الجهة">
-        <input type="text" id="borrower" placeholder="اسم المستعير">
-        <input type="tel" id="phoneBorrow" placeholder="رقم الهاتف">
-        <textarea id="devicesBorrow" placeholder="بيانات الأدوات والأجهزة"></textarea>
-        <input type="date" id="dateBorrow">
-        <br>
-        <button onclick="submitForm('borrow')">إرسال</button>
-        <a class="back-arrow" href="#" onclick="goHome()">⬅ الرجوع</a>
-    </div>
+  <button onclick="showForm('borrow')">بيانات الاستعارة</button>
+  <button onclick="showForm('return')">بيانات الإرجاع</button>
 
-    <!-- Form: Return -->
-    <div id="return" class="form-section">
-        <input type="text" id="schoolReturn" placeholder="اسم المدرسة / الجهة">
-        <input type="text" id="borrowerReturn" placeholder="اسم المستعير">
-        <input type="text" id="receiverReturn" placeholder="اسم المستلم">
-        <select id="statusReturn">
-            <option value="تم الإرجاع">تم الإرجاع</option>
-            <option value="لم يتم الإرجاع">لم يتم الإرجاع</option>
-        </select>
-        <input type="date" id="dateReturn">
-        <br>
-        <button onclick="submitForm('return')">إرسال</button>
-        <a class="back-arrow" href="#" onclick="goHome()">⬅ الرجوع</a>
-    </div>
+  <!-- Form: Borrow -->
+  <div id="borrowForm" style="display:none;">
+    <form id="formBorrow">
+      <input type="hidden" name="type" value="استعارة">
+      <input type="text" name="school" placeholder="اسم المدرسة / الجهة" required><br>
+      <input type="text" name="borrower" placeholder="اسم المستعير" required><br>
+      <input type="tel" name="phone" placeholder="رقم الهاتف" required><br>
+      <textarea name="items" placeholder="بيانات الأدوات والأجهزة" required></textarea><br>
+      <input type="date" name="date" required><br>
+      <button type="submit">إرسال</button>
+    </form>
+    <span class="back-button" onclick="back()">🔙</span>
+  </div>
 
-    <script>
-        function showSection(type) {
-            document.getElementById('borrow').style.display = (type === 'borrow') ? 'block' : 'none';
-            document.getElementById('return').style.display = (type === 'return') ? 'block' : 'none';
-        }
+  <!-- Form: Return -->
+  <div id="returnForm" style="display:none;">
+    <form id="formReturn">
+      <input type="hidden" name="type" value="إرجاع">
+      <input type="text" name="school" placeholder="اسم المدرسة / الجهة" required><br>
+      <input type="text" name="borrower" placeholder="اسم المستعير" required><br>
+      <input type="text" name="receiver" placeholder="اسم المستلم" required><br>
+      <input type="text" name="status" placeholder="حالة الإرجاع" required><br>
+      <input type="date" name="date" required><br>
+      <button type="submit">إرسال</button>
+    </form>
+    <span class="back-button" onclick="back()">🔙</span>
+  </div>
 
-        function goHome() {
-            document.getElementById('borrow').style.display = 'none';
-            document.getElementById('return').style.display = 'none';
-        }
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyI02n4XlXZKjXi2mdXF1ipiOqdaYPD6Tb_r2qZovfJbcBbvC8equf0TMJbdfnqtS_TEA/exec";
 
-        function submitForm(type) {
-            let message = "";
-            let phone = "";
-            let payload = {};
+    function showForm(type) {
+      document.getElementById('borrowForm').style.display = (type === 'borrow') ? 'block' : 'none';
+      document.getElementById('returnForm').style.display = (type === 'return') ? 'block' : 'none';
+    }
 
-            if (type === 'borrow') {
-                const school = document.getElementById('schoolBorrow').value.trim();
-                const name = document.getElementById('borrower').value.trim();
-                const phoneNumber = document.getElementById('phoneBorrow').value.trim();
-                const devices = document.getElementById('devicesBorrow').value.trim();
-                const date = document.getElementById('dateBorrow').value;
-                if (!school || !name || !phoneNumber || !devices || !date) return alert("يرجى تعبئة جميع البيانات.");
-                message = `استعارة:\nالمدرسة / الجهة: ${school}\nالمستعير: ${name}\nرقم الهاتف: ${phoneNumber}\nالأجهزة: ${devices}\nالتاريخ: ${date}\n\nشكراً لك - مركز الابتكار العلمي والروبوت`;
-                phone = phoneNumber;
-                payload = { type, school, name, phone, devices, receiver: "", status: "", date };
-            } else {
-                const school = document.getElementById('schoolReturn').value.trim();
-                const borrower = document.getElementById('borrowerReturn').value.trim();
-                const receiver = document.getElementById('receiverReturn').value.trim();
-                const status = document.getElementById('statusReturn').value;
-                const date = document.getElementById('dateReturn').value;
-                if (!school || !borrower || !receiver || !status || !date) return alert("يرجى تعبئة جميع البيانات.");
-                phone = prompt("ادخل رقم الهاتف لإرسال رسالة واتساب (مثال: 9689xxxxxxx):");
-                if (!phone) return;
-                message = `إرجاع:\nالمدرسة / الجهة: ${school}\nالمستعير: ${borrower}\nالمستلم: ${receiver}\nالحالة: ${status}\nالتاريخ: ${date}\n\nشكراً لك - مركز الابتكار العلمي والروبوت`;
-                payload = { type, school, name: borrower, phone, devices: "", receiver, status, date };
-            }
+    function back() {
+      document.getElementById('borrowForm').style.display = 'none';
+      document.getElementById('returnForm').style.display = 'none';
+    }
 
-            const encodedMessage = encodeURIComponent(message);
-            const url = `https://wa.me/${phone}?text=${encodedMessage}`;
-            window.open(url, '_blank');
+    document.getElementById('formBorrow').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = new FormData(this);
+      const phone = data.get("phone");
+      const msg = `🔶 بيانات الاستعارة:\n- المدرسة/الجهة: ${data.get("school")}\n- المستعير: ${data.get("borrower")}\n- الهاتف: ${data.get("phone")}\n- الأجهزة: ${data.get("items")}\n- التاريخ: ${data.get("date")}\nشكراً لك 💡 مركز الابتكار العلمي والروبوت`;
 
-            // إرسال البيانات إلى Google Sheets
-            fetch("https://script.google.com/macros/s/AKfycbwckXFhksYtLp_zr02xPIT81Yguz6THfv9cL3FG_G3PcYwcjVB5xnFP08MmJVj7bat2/exec", {
-                method: "POST",
-                body: JSON.stringify(payload),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(response => {
-                if (response.ok) {
-                    alert("✅ تم إرسال البيانات وتخزينها بنجاح!");
-                } else {
-                    alert("⚠️ حدث خطأ أثناء حفظ البيانات في Google Sheets.");
-                }
-            }).catch(() => {
-                alert("❌ تعذر الاتصال بـ Google Sheets.");
-            });
-        }
-    </script>
+      fetch(scriptURL, { method: 'POST', body: data });
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+      alert("✅ تم إرسال بيانات الاستعارة بنجاح");
+      this.reset();
+    });
+
+    document.getElementById('formReturn').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = new FormData(this);
+      const phone = prompt("📱 أدخل رقم هاتف المستعير (مثال: 9689xxxxxxx):");
+      const msg = `🔶 بيانات الإرجاع:\n- المدرسة/الجهة: ${data.get("school")}\n- المستعير: ${data.get("borrower")}\n- المستلم: ${data.get("receiver")}\n- الحالة: ${data.get("status")}\n- التاريخ: ${data.get("date")}\nشكراً لك 💡 مركز الابتكار العلمي والروبوت`;
+
+      fetch(scriptURL, { method: 'POST', body: data });
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+      alert("✅ تم إرسال بيانات الإرجاع بنجاح");
+      this.reset();
+    });
+  </script>
+
 </body>
 </html>
